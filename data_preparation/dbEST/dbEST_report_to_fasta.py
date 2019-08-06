@@ -3,6 +3,27 @@ import sys
 import os
 import gzip
 
+
+BLOSUM = {
+    "A" : "A",
+    "C" : "C",
+    "G" : "G",
+    "T" : "T",
+    "U" : "T",
+    "W" : "A",
+    "S" : "G",
+    "M" : "A",
+    "K" : "G",
+    "R" : "A",
+    "Y" : "C",
+    "B" : "G",
+    "D" : "A",
+    "H" : "A",
+    "V" : "A",
+    "N" : "A",
+    "Z" : "",
+}
+
 if len(sys.argv) < 2:
     exit("run: python dbEST_report_to_fasta.py <dbEST_report> <filter_keyword:optional>")
 else:
@@ -13,6 +34,14 @@ FILTER = False
 
 if len(sys.argv) > 2:
     FILTER = " ".join(sys.argv[2:])
+
+
+custom_open = None
+if ".gz" in full_path:
+    custom_open = gzip.open
+else:
+    custom_open = open
+
 
 def parse(ready_line):
 
@@ -37,32 +66,37 @@ def parse(ready_line):
             result["genbank_acc"] = splitted[4].replace(' ','').split(":")[-1]
             break    
     
+    
     for i in range(len(splitted)):
         if "SEQUENCE" in splitted[i]:
             _idx = i + 1
             break
 
+    
 
-    sequence = ""
+    _seq = ""
     dna_set = set("ACGT")
     valid_sequence = True
     idx = _idx
+    BLOSUM_KEYS = set(BLOSUM.keys())
 
     while True:
         __line =  splitted[idx].replace(' ','')
-        if len(set(__line).intersection(dna_set)) >= 3:
-            sequence += __line
+        __line_set = set(__line)
+        __line_set_ln = len(__line_set)
+        
+        if len(__line_set.intersection(BLOSUM_KEYS))  == __line_set_ln:
+            _seq += __line
             idx += 1
         else:
             idx += 1
             break
     
-    
+    sequence = str()
     # Assert there is no "ACGT" characters
-    for i in set(sequence):
-        if i not in ["A","C","G","T"]:
-            return False
-        
+    for base in _seq:
+        sequence += BLOSUM[base]
+    
 
     seq = textwrap.fill(sequence, width=60)
 
@@ -88,8 +122,7 @@ if FILTER:
     FILTER_NAME = FILTER.replace(" ","-")
     fasta_output = f"filtered_{FILTER_NAME}_" + fasta_output
 
-
-with gzip.open(full_path, 'rt', errors='ignore') as report, open(fasta_output, 'w') as fasta, open(fasta_output + ".names", 'w') as names:
+with custom_open(full_path, 'rt', errors='ignore') as report, open(fasta_output, 'w') as fasta, open(fasta_output + ".names", 'w') as names:    
     ready_line = ""
 
     for line in report:
