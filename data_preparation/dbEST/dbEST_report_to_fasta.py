@@ -89,7 +89,7 @@ if FILTER:
     fasta_output = f"filtered_{FILTER_NAME}_" + fasta_output
 
 
-with gzip.open(full_path, 'rt') as report, open(fasta_output, 'w') as fasta:
+with gzip.open(full_path, 'rt', errors='ignore') as report, open(fasta_output, 'w') as fasta:
     ready_line = ""
 
     for line in report:
