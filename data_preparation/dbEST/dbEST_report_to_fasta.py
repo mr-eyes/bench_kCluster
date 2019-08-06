@@ -76,8 +76,8 @@ def parse(ready_line):
             continue
 
     header = [f"{key}:{value}|" for key, value in result.items()]
-    header = ">" + "".join(header)
-    header = header[:-1] + "\n"
+    header = "".join(header)
+    header = header[:-1]
     
     return [header, seq]
     
@@ -89,7 +89,7 @@ if FILTER:
     fasta_output = f"filtered_{FILTER_NAME}_" + fasta_output
 
 
-with gzip.open(full_path, 'rt', errors='ignore') as report, open(fasta_output, 'w') as fasta:
+with gzip.open(full_path, 'rt', errors='ignore') as report, open(fasta_output, 'w') as fasta, open(fasta_output + ".names", 'w') as names:
     ready_line = ""
 
     for line in report:
@@ -109,8 +109,10 @@ with gzip.open(full_path, 'rt', errors='ignore') as report, open(fasta_output, '
         if record:
             if FILTER:
                 if FILTER.lower() in record[0].lower():
-                    fasta.write(record[0])
+                    fasta.write(">" + record[0] + "\n")
                     fasta.write(record[1] + "\n\n")
+                    names.write(record[0]+"\t"+record[0]+"\n")
             else:
-                fasta.write(record[0])
+                fasta.write(">" + record[0] + "\n")
                 fasta.write(record[1] + "\n\n")
+                names.write(record[0][1:]+"\t"+record[0][1:]+"\n")
