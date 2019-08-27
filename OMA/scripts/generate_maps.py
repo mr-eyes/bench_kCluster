@@ -30,7 +30,8 @@ class MAPPER:
             for line in oma_groups:
                 line = line.strip().split()
                 oma_group = int(line[0])
-                proteins = [re.findall("[A-Z]*", entry)[0] for entry in line[1:] if entry != "n/a"]
+                # proteins = [re.findall("[A-Z]*", entry)[0] for entry in line[1:] if entry != "n/a"]
+                proteins = [entry for entry in line[1:] if entry != "n/a"]
                 group_to_species[oma_group] = proteins
 
         output_pickle = os.path.join(MAPPER.ABS_PATH, "..", "oma_data", "maps", "oma_group_to_species.pickle")

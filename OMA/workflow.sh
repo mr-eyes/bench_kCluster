@@ -5,12 +5,17 @@ set -euo pipefail
 OK="\e[32m[OK] \e[0m"
 
 mkdir -p oma_data/maps
+mkdir -p oma_seqs
 
 # echo "Downloading gene2refseq.gz ..."
 # wget -N ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene2refseq.gz
 
 # echo "Downloading oma-ref-seq.txt.gz ..."
 # wget -N https://omabrowser.org/All/oma-refseq.txt.gz
+
+#######################################
+#             DOWNLOAD                #
+#######################################
 
 echo -e "\e[33m\e[1mDownloading.. \e[0m"
 
@@ -31,13 +36,11 @@ else
     wget -N https://omabrowser.org/All/oma-groups.txt.gz -O ${FILE}
 fi
 
-
-# echo "Extracting Homo Sapiens & Macaca Mulatta"
-# zcat eukaryotes.cdna.fa.gz | seqkit grep -r -p HUMAN -p MACMU > human_mulatta.fa
+#######################################
+#            GENERATING MAPS          #
+#######################################
 
 echo -e "\e[33m\e[1mGenerating maps .. \e[0m"
-# Choose from [groups_to_species, groups_to_refseq]
-
 FILE=./oma_data/maps/oma_group_to_species.pickle
 if [ -f "$FILE" ]; then
     echo -e "${OK} groups_to_species.pickle exists, skipping.."
@@ -45,3 +48,8 @@ else
     echo "Generating oma-group-id -> species_list"
     python scripts/generate_maps.py groups_to_species
 fi
+
+
+
+# echo "Extracting Homo Sapiens & Macaca Mulatta"
+# zcat eukaryotes.cdna.fa.gz | seqkit grep -r -p HUMAN -p MACMU > human_mulatta.fa
