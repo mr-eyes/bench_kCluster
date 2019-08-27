@@ -1,0 +1,8 @@
+1)
+Indexing
+SPECIES: HUMAN GORGO PANTR PANPA PONAB NOMLE
+Command being timed: "kCluster index_kmers -f exp1.fa -n exp1.fa.names -k 31"
+User time (seconds): 328.01
+System time (seconds): 3.22
+Elapsed (wall clock) time (h:mm:ss or m:ss): 5:32.21
+Maximum resident set size (kbytes): 2346444
