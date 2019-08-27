@@ -103,18 +103,35 @@ fasta_sequences = SeqIO.parse(gzip.open(cdna_fasta,'rt'),'fasta')
 fasta_output = os.path.join(exp_dir, "exp" + exp_id + ".fa")
 names_output = fasta_output + ".names"
 
+group_to_names = dict()
 
-with open(fasta_output, 'w') as fastaFile, open(names_output, 'w') as namesFile:
+with open(fasta_output, 'w') as fastaFile:
     for seq in fasta_sequences:
         protein_name = str(seq.description).strip()
-        seq.description = protein_name
+
+        if protein_name in protein_to_oma_group:
+            seq.description = protein_name + "|" + str(protein_to_oma_group[protein_name])
+        else:
+            continue
 
         if re.findall("[A-Z]*", protein_name)[0] in SPECIES:
             new_seq = str()
             for ch in seq.seq:
                 new_seq += BLOSUM[ch]
             seq.seq = Seq(new_seq)
+            SeqIO.write(seq, fastaFile, "fasta")
 
             if protein_name in protein_targets_keys:
-                namesFile.write(protein_name + "\t" + str(protein_to_oma_group[protein_name]) + "\n")
-                SeqIO.write(seq, fastaFile, "fasta")
+                group_id = protein_to_oma_group[protein_name]
+
+                if group_id in group_to_names:
+                    group_to_names[group_id].append(protein_name)
+                else:
+                    group_to_names[group_id] = [protein_name]
+
+
+with open(names_output, 'w') as namesFile:
+    for group, proteins in group_to_names.items():
+        if len(proteins) == SPECIES_NO:
+            for protein_name in proteins:
+                namesFile.write(protein_name + "\t" + str(group) + "\n")
