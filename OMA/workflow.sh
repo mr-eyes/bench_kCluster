@@ -1,8 +1,20 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+kCluster_pairwise=$(pwd)/../kCluster2/build/kCluster_pairwise
+
+if ! [ -x "$(command -v kCluster)" ]; then
+  echo 'Error: kCluster is not installed.' >&2
+  exit 1
+fi
+
+if ! [ -x "$(command -v ${kCluster_pairwise})" ]; then
+  echo 'Error: kCluster_pairwise is not installed.' >&2
+  exit 1
+fi
 
 OK="\e[32m[OK] \e[0m"
+PROCESSING="\e[33m[RUNNING] \e[0m"
 
 mkdir -p oma_data/maps
 mkdir -p oma_seqs
@@ -49,7 +61,90 @@ else
     python scripts/generate_maps.py groups_to_species
 fi
 
+#######################################
+#         Extracting Species          #
+#######################################
+
+echo -e "\e[33m\e[1mExtracting Species .. \e[0m"
 
 
-# echo "Extracting Homo Sapiens & Macaca Mulatta"
-# zcat eukaryotes.cdna.fa.gz | seqkit grep -r -p HUMAN -p MACMU > human_mulatta.fa
+# Exp_1 : HUMAN GORGO PANTR PANPA PONAB NOMLE
+FILE=./oma_seqs/exp_1
+if [ -d "$FILE" ]; then
+    echo -e "${OK} Exp_1 sequences found, skipping the extraction.."
+else
+    echo "Extracting [HUMAN GORGO PANTR PANPA PONAB NOMLE]"
+    python scripts/filter_oma_groups.py  HUMAN GORGO PANTR PANPA PONAB NOMLE
+fi
+
+#######################################
+#              Indexing               #
+#######################################
+
+echo -e "\e[33m\e[1mIndexing .. \e[0m"
+
+for dir in oma_seqs/*     # list directories in the form "/tmp/dirname/"
+do
+
+    exp_id=${dir%*/}
+    exp_id=${exp_id##*/}
+    
+    if ls ${dir}/*map 1> /dev/null 2>&1; then
+        echo -e "${OK} ${exp_id} already indexed, skipping.."
+    else
+        echo -e "${PROCESSING} Indexing ${exp_id##*/} .."
+        kCluster index_kmers -f ${dir}/*.fa -n  ${dir}/*.fa.names -k 31
+        mv idx* ${dir}
+    fi
+
+done
+
+#######################################
+#              Pairwise               #
+#######################################
+
+echo -e "\e[33m\e[1mCalculating Pairwise similarity .. \e[0m"
+
+# QsList="15,20,25,31"
+QsList="31"
+
+for dir in oma_seqs/*     # list directories in the form "/tmp/dirname/"
+do
+
+    exp_id=${dir%*/}
+    exp_id=${exp_id##*/}
+    exp_no=$(echo "${exp_id//[!0-9]/}")
+    idx_prefix=${dir}/idx_exp${exp_no}
+
+    if ls ${dir}/*kCluster.tsv 1> /dev/null 2>&1; then
+        echo -e "${OK} ${exp_id} pairwise matrix already exist, skipping.."
+    else
+        echo -e "${PROCESSING} Generating ${exp_id##*/} pairwise TSV .."
+        ${kCluster_pairwise} --idx=${idx_prefix} --qs=${QsList}
+    fi
+
+done
+
+
+#######################################
+#              Pivoting               #
+#######################################
+
+echo -e "\e[33m\e[1mPivoting .. \e[0m"
+
+for dir in oma_seqs/*     # list directories in the form "/tmp/dirname/"
+do
+
+    exp_id=${dir%*/}
+    exp_id=${exp_id##*/}
+    exp_no=$(echo "${exp_id//[!0-9]/}")
+    idx_prefix=${dir}/idx_exp${exp_no}
+
+    if ls ${dir}/*pivoted.tsv 1> /dev/null 2>&1; then
+        echo -e "${OK} ${exp_id} pivoted pairwise matrix already exist, skipping.."
+    else
+        echo -e "${PROCESSING} Pivoting ${exp_id##*/} pairwise TSV .."
+        ${kCluster_pairwise} pivote --idx=${dir}/idx_exp${exp_no} --qs=${QsList}
+    fi
+
+done
