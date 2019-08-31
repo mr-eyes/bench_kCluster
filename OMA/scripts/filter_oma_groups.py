@@ -45,7 +45,7 @@ if len(sys.argv) > 1:
     SPECIES_NO = len(sys.argv) - 1
 
 else:
-    print("Failed in parsing arguments..", file = sys.stderr)
+    print("Failed in parsing arguments..")
     sys.exit(1)
 
 ###########
@@ -54,7 +54,7 @@ else:
 
 ABS_PATH = os.path.abspath(os.path.split(sys.argv[0])[0])
 pickle_path = os.path.join(ABS_PATH, "..", "oma_data", "maps", "oma_group_to_species.pickle")
-print("loading oma_group_to_species.pickle", file = sys.stderr)
+print("loading oma_group_to_species.pickle")
 with open(pickle_path, 'rb') as handle:
     all_group_to_species = pickle.load(handle)
 
@@ -105,12 +105,12 @@ names_output = fasta_output + ".names"
 
 group_to_names = dict()
 
-with open(fasta_output, 'w') as fastaFile:
+with open(fasta_output, 'w') as fastaFile, open(names_output, 'w') as namesFile:
     for seq in fasta_sequences:
         protein_name = str(seq.description).strip()
 
         if protein_name in protein_to_oma_group:
-            seq.description = protein_name + "|" + str(protein_to_oma_group[protein_name])
+            seq.description = seq.id = seq.name = protein_name + "|" + str(protein_to_oma_group[protein_name])
         else:
             continue
 
@@ -120,6 +120,7 @@ with open(fasta_output, 'w') as fastaFile:
                 new_seq += BLOSUM[ch]
             seq.seq = Seq(new_seq)
             SeqIO.write(seq, fastaFile, "fasta")
+            namesFile.write(seq.description + '\t' + seq.description + '\n')
 
             if protein_name in protein_targets_keys:
                 group_id = protein_to_oma_group[protein_name]
@@ -129,9 +130,8 @@ with open(fasta_output, 'w') as fastaFile:
                 else:
                     group_to_names[group_id] = [protein_name]
 
-
-with open(names_output, 'w') as namesFile:
-    for group, proteins in group_to_names.items():
-        if len(proteins) == SPECIES_NO:
-            for protein_name in proteins:
-                namesFile.write(protein_name + "\t" + str(group) + "\n")
+# with open(names_output, 'w') as namesFile:
+#     for group, proteins in group_to_names.items():
+#         if len(proteins) == SPECIES_NO:
+#             for protein_name in proteins:
+#                 namesFile.write(protein_name + "\t" + protein_name + "\n")
