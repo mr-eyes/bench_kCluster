@@ -1,12 +1,17 @@
 # Benchmarking scripts for kCluster
 
-## Install kCluster
+## Installation
 
 ```bash
-pip install git+https://github.com/mr-eyes/kCluster#egg=kCluster
+bash install.sh
 ```
 
-> Verify the installation by invoking `kCLuster` command from terminal.
+## OMA Benchmarking Expirement
+
+```bash
+cd OMA
+bash workflow.sh
+```
 
 ---
 
