@@ -105,8 +105,12 @@ done
 
 echo -e "\e[33m\e[1mCalculating Pairwise similarity .. \e[0m"
 
-# QsList="15,20,25,31"
-QsList="31"
+# virtualQs
+# Set here all virtualQs you want to process
+# ---------------------
+QsList="30,31"
+# ---------------------
+
 
 for dir in oma_seqs/*     # list directories in the form "/tmp/dirname/"
 do
@@ -148,3 +152,33 @@ do
     fi
 
 done
+
+#######################################
+#            Clustering               #
+#######################################
+
+for dir in oma_seqs/*     # list directories in the form "/tmp/dirname/"
+do
+
+    exp_id=${dir%*/}
+    exp_id=${exp_id##*/}
+    exp_no=$(echo "${exp_id//[!0-9]/}")
+    idx_prefix=${dir}/idx_exp${exp_no}
+    # echo -e "${PROCESSING} Clustering ${dir}/idx_exp${exp_no}_pivoted.tsv"
+    echo -e "\e[33m\e[1mClustering ${dir}/idx_exp${exp_no}_pivoted.ts .. \e[0m"
+
+    for THRESHOLD in {0..100..1};
+    do
+        THRESHOLD=$(printf "%02d" $THRESHOLD)
+        FILE=${dir}/clusters_0.${THRESHOLD}%_idx_exp${exp_no}_pivoted.tsv
+        if [ -f "$FILE" ]; then
+            echo -e "${OK} ${FILE} exists, skipping.."
+        else
+            echo "Threshold ${THRESHOLD}%"
+            kCluster cluster --qs ${QsList} --tsv ${dir}/idx_exp${exp_no}_pivoted.tsv --cutoff 0.${THRESHOLD}
+            mv clusters_0.${THRESHOLD}%_idx_exp${exp_no}_pivoted.tsv ${dir}
+        fi
+    done
+
+done
+
