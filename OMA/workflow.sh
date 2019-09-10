@@ -77,6 +77,75 @@ else
     python scripts/filter_oma_groups.py  HUMAN GORGO PANTR PANPA PONAB NOMLE
 fi
 
+# Exp_2 : HUMAN GORGO AOTNA MOUSE JACJA MACMU ASTMX XIPMA URSAM PHACI
+FILE=./oma_seqs/exp_2
+if [ -d "$FILE" ]; then
+    echo -e "${OK} Exp_2 sequences found, skipping the extraction.."
+else
+    echo "Extracting [HUMAN GORGO AOTNA MOUSE JACJA MACMU ASTMX XIPMA URSAM PHACI]"
+    python scripts/filter_oma_groups.py  HUMAN GORGO AOTNA MOUSE JACJA MACMU ASTMX XIPMA URSAM PHACI
+fi
+
+# Exp_3 : HUMAN GORGO AOTNA MOUSE DROER DROEL DRORH DROBP DROSI DROBM
+FILE=./oma_seqs/exp_3
+if [ -d "$FILE" ]; then
+    echo -e "${OK} Exp_3 sequences found, skipping the extraction.."
+else
+    echo "Extracting [HUMAN GORGO AOTNA MOUSE DROER DROEL DRORH DROBP DROSI DROBM]"
+    python scripts/filter_oma_groups.py  HUMAN GORGO AOTNA MOUSE DROER DROEL DRORH DROBP DROSI DROBM
+fi
+
+# Exp_4 : HUMAN GORGO AOTNA MOUSE DANPL MEGSC ANODA CULSO TUPBE MANLE
+FILE=./oma_seqs/exp_4
+if [ -d "$FILE" ]; then
+    echo -e "${OK} Exp_4 sequences found, skipping the extraction.."
+else
+    echo "Extracting [HUMAN GORGO AOTNA MOUSE DANPL MEGSC ANODA CULSO TUPBE MANLE]"
+    python scripts/filter_oma_groups.py  HUMAN GORGO AOTNA MOUSE DANPL MEGSC ANODA CULSO TUPBE MANLE
+fi
+
+
+# Exp_5 : HUMAN GORGO BRUMA MOUSE ONCVO MEGSC SCHMA CULSO NEMVE SCHMD
+FILE=./oma_seqs/exp_5
+if [ -d "$FILE" ]; then
+    echo -e "${OK} Exp_5 sequences found, skipping the extraction.."
+else
+    echo "Extracting [HUMAN GORGO BRUMA MOUSE ONCVO MEGSC SCHMA CULSO NEMVE SCHMD]"
+    python scripts/filter_oma_groups.py  HUMAN GORGO BRUMA MOUSE ONCVO MEGSC SCHMA CULSO NEMVE SCHMD
+fi
+
+
+# Exp_6 : HUMAN BOTFB FUSC1 MOUSE ONCVO BLUGR CRYPA CULSO NECHA SCHMD
+FILE=./oma_seqs/exp_6
+if [ -d "$FILE" ]; then
+    echo -e "${OK} Exp_6 sequences found, skipping the extraction.."
+else
+    echo "Extracting [HUMAN BOTFB FUSC1 MOUSE ONCVO BLUGR CRYPA CULSO NECHA SCHMD]"
+    python scripts/filter_oma_groups.py  HUMAN BOTFB FUSC1 MOUSE ONCVO BLUGR CRYPA CULSO NECHA SCHMD
+fi
+
+
+# Exp_6 : HUMAN SCHJY FUSC1 MOUSE ONCVO PHLGI COPCI CANAL RHIOR SCHMD
+FILE=./oma_seqs/exp_7
+if [ -d "$FILE" ]; then
+    echo -e "${OK} Exp_7 sequences found, skipping the extraction.."
+else
+    echo "Extracting [HUMAN SCHJY FUSC1 MOUSE ONCVO PHLGI COPCI CANAL RHIOR SCHMD]"
+    python scripts/filter_oma_groups.py  HUMAN SCHJY FUSC1 MOUSE ONCVO PHLGI COPCI CANAL RHIOR SCHMD
+fi
+
+
+# Exp_6 : HUMAN BRARP PHAVU GORGO ORYSI PHYPR COPCI CANAL RHIOR RETFI
+FILE=./oma_seqs/exp_8
+if [ -d "$FILE" ]; then
+    echo -e "${OK} Exp_8 sequences found, skipping the extraction.."
+else
+    echo "Extracting [HUMAN BRARP PHAVU GORGO ORYSI PHYPR COPCI CANAL RHIOR RETFI]"
+    python scripts/filter_oma_groups.py  HUMAN BRARP PHAVU GORGO ORYSI PHYPR COPCI CANAL RHIOR RETFI
+fi
+
+
+
 #######################################
 #              Indexing               #
 #######################################
