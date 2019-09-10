@@ -29,4 +29,4 @@ fi
 echo -e "---------"
 echo -e "${OK} Everthing has been installed successfully"
 echo ""
-echo "Test by invoking: ./kCluster2/build/kCluster_pairwise"
+echo "\e[33m\e[1mTest by invoking: ./kCluster2/build/kCluster_pairwise"
