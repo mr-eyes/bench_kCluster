@@ -210,24 +210,26 @@ summary.write(("%d\t%d\tim\n") % (_im_transcripts_count, _incomplete_mixed))
 summary.write(("%d\t%d\tic\n") % (_ic_transcripts_count, _incomplete_clean))
 summary.close()
 
+
+# Disabled
 # Writing statistics json file ________________________________
 
-json_output = {}
+# json_output = {}
 
-for cluster_type in ["_incomplete_mixed", "_incomplete_clean", "_complete_mixed", "_complete_clean"]:
+# for cluster_type in ["_incomplete_mixed", "_incomplete_clean", "_complete_mixed", "_complete_clean"]:
 
-    result = {
-            'no_genes': stats["genes"][cluster_type],
-            'complete_genes':  stats["complete-genes"][cluster_type],
-            'no_loci':  stats["loci"][cluster_type],
-            'complete_loci':  stats["complete-loci"][cluster_type]
-        }
-    json_output[cluster_type] = result
+#     result = {
+#             'no_genes': stats["genes"][cluster_type],
+#             'complete_genes':  stats["complete-genes"][cluster_type],
+#             'no_loci':  stats["loci"][cluster_type],
+#             'complete_loci':  stats["complete-loci"][cluster_type]
+#         }
+#     json_output[cluster_type] = result
 
 
-json_file = open(output_file.split(".")[0] + "_stats.json", "w")
+# json_file = open(output_file.split(".")[0] + "_stats.json", "w")
 
-json_file.write(json.dumps(json_output, sort_keys=True,
-                           indent=4, separators=(',', ': ')))
+# json_file.write(json.dumps(json_output, sort_keys=True,
+#                            indent=4, separators=(',', ': ')))
 
-json_file.close()
+# json_file.close()
