@@ -159,7 +159,7 @@ done
 
 for dir in oma_seqs/*     # list directories in the form "/tmp/dirname/"
 do
-
+    mkdir -p ${dir}/clusters
     exp_id=${dir%*/}
     exp_id=${exp_id##*/}
     exp_no=$(echo "${exp_id//[!0-9]/}")
@@ -170,15 +170,57 @@ do
     for THRESHOLD in {0..100..1};
     do
         THRESHOLD=$(printf "%02d" $THRESHOLD)
-        FILE=${dir}/clusters_0.${THRESHOLD}%_idx_exp${exp_no}_pivoted.tsv
-        if [ -f "$FILE" ]; then
+        FILE=${dir}/clusters/clusters_0.${THRESHOLD}%_idx_exp${exp_no}_pivoted.tsv
+
+
+        ### Special case for 100%
+        if [ ${THRESHOLD} == 100 ]; then
+            THRESHOLD="1.00"
+            FILE=${dir}/clusters/clusters_1.00%_idx_exp${exp_no}_pivoted.tsv
+            if [ -f "$FILE" ]; then
             echo -e "${OK} ${FILE} exists, skipping.."
-        else
-            echo "Threshold ${THRESHOLD}%"
-            kCluster cluster --qs ${QsList} --tsv ${dir}/idx_exp${exp_no}_pivoted.tsv --cutoff 0.${THRESHOLD}
-            mv clusters_0.${THRESHOLD}%_idx_exp${exp_no}_pivoted.tsv ${dir}
+            else
+                echo "Threshold 1.00%"
+                kCluster cluster --qs ${QsList} --tsv ${dir}/idx_exp${exp_no}_pivoted.tsv --cutoff 1.00
+                mv clusters_1.00%_idx_exp${exp_no}_pivoted.tsv ${dir}/clusters
+            fi
+
+        ### END Special case for 100%
+
+        else        
+            if [ -f "$FILE" ]; then
+                echo -e "${OK} ${FILE} exists, skipping.."
+            else
+                echo "Threshold ${THRESHOLD}%"
+                kCluster cluster --qs ${QsList} --tsv ${dir}/idx_exp${exp_no}_pivoted.tsv --cutoff 0.${THRESHOLD}
+                mv clusters_0.${THRESHOLD}%_idx_exp${exp_no}_pivoted.tsv ${dir}/clusters
+            fi
         fi
     done
 
 done
 
+#######################################
+#            Assessement               #
+#######################################
+
+echo -e "\e[33m\e[1mAssessing clustering of ${dir}/idx_exp${exp_no}_pivoted.ts .. \e[0m"
+
+
+for dir in oma_seqs/*     # list directories in the form "/tmp/dirname/"
+do
+    mkdir -p ${dir}/clusters/assessement/{summaries,detailed}
+    exp_id=${dir%*/}
+    exp_id=${exp_id##*/}
+    exp_no=$(echo "${exp_id//[!0-9]/}")
+    idx_prefix=${dir}/idx_exp${exp_no}
+
+    for kClusters_file in ${dir}/clusters/clusters_*.tsv;
+    do
+        echo "Assessing ${kClusters_file} .."
+        python scripts/kCluster_assess_by_OMA.py ${kClusters_file}
+        mv ${dir}/clusters/assessement*_summary.txt ${dir}/clusters/assessement/summaries
+        mv ${dir}/clusters/assessement*tsv ${dir}/clusters/assessement/detailed
+    done
+
+done
