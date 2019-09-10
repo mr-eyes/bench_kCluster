@@ -204,7 +204,7 @@ done
 #            Assessement               #
 #######################################
 
-echo -e "\e[33m\e[1mAssessing clustering of ${dir}/idx_exp${exp_no}_pivoted.ts .. \e[0m"
+echo -e "\e[33m\e[1mAssessing clustering of ${dir}/idx_exp${exp_no}_pivoted.tsv .. \e[0m"
 
 
 for dir in oma_seqs/*     # list directories in the form "/tmp/dirname/"
@@ -223,4 +223,15 @@ do
         mv ${dir}/clusters/assessement*tsv ${dir}/clusters/assessement/detailed
     done
 
+done
+
+#######################################
+#            Visualization            #
+#######################################
+
+
+for dir in oma_seqs/*     # list directories in the form "/tmp/dirname/"
+do
+    echo -e "\e[33m\e[1mVisualizing clustering assessement of ${dir} .. \e[0m"
+    python scripts/visualize_clustering_assessment.py ${dir}/clusters/assessement/summaries
 done
