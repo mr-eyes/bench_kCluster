@@ -202,7 +202,7 @@ for cluster_id, transcripts_ids in sorted(clusters_transcripts_ids.items()):
 res.close()
 
 # Writing summary file of counts ________________________________
-summary = open(output_file.split(".")[0] + "_summary.txt", "w")
+summary = open(output_file.replace(".tsv","") + "_summary.txt", "w")
 summary.write("seqs\tclstrs\ttype\n")
 summary.write(("%d\t%d\tcm\n") % (_cm_transcripts_count, _complete_mixed))
 summary.write(("%d\t%d\tcc\n") % (_cc_transcripts_count, _complete_clean))
