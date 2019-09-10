@@ -364,10 +364,10 @@ do
     exp_no=$(echo "${exp_id//[!0-9]/}")
     idx_prefix=${dir}/idx_exp${exp_no}
 
-    mkdir -p ${dir}/cdhit/{80,85,90,95}/{summaries,details}
-    for THRESHOLD in 75 80 85 90 95; 
+    mkdir -p ${dir}/cdhit
+    for THRESHOLD in 95;# 75 80 85 90 95; 
     do
-        
+        mkdir -p ${dir}/cdhit/${THRESHOLD}/{summaries,details}
         FILE=${dir}/cdhit/${THRESHOLD}/exp${exp_no}_${THRESHOLD}.cdhit
         if [ -f "$FILE" ]; then
             echo -e "${OK} ${FILE} found, skipping the clustering.."
@@ -385,7 +385,22 @@ done
 #            Assessement              #
 #######################################
 
+for dir in oma_seqs/*     # list directories in the form "/tmp/dirname/"
+do
 
+    exp_id=${dir%*/}
+    exp_id=${exp_id##*/}
+    exp_no=$(echo "${exp_id//[!0-9]/}")
+
+    for THRESHOLD_dir in ${dir}/cdhit/*
+    do
+        THRESHOLD_NO=${THRESHOLD_dir%*/}
+        THRESHOLD_NO=${THRESHOLD_NO##*/}
+        python scripts/cdhit_assess_by_gene.py ${dir}/exp${exp_no}.fa ${THRESHOLD_dir}/exp${exp_no}_${THRESHOLD_NO}.cdhit.clstr
+    done
+
+
+done
 
 #######################################
 #            Visualization            #
