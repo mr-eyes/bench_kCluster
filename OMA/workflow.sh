@@ -13,6 +13,12 @@ if ! [ -x "$(command -v ${kCluster_pairwise})" ]; then
   exit 1
 fi
 
+if ! [ -x "$(command -v cd-hit-est)" ]; then
+  echo 'Error: CD-HIT is not installed.' >&2
+  exit 1
+fi
+
+
 OK="\e[32m[OK] \e[0m"
 PROCESSING="\e[33m[RUNNING] \e[0m"
 
@@ -24,6 +30,16 @@ mkdir -p oma_seqs
 
 # echo "Downloading oma-ref-seq.txt.gz ..."
 # wget -N https://omabrowser.org/All/oma-refseq.txt.gz
+
+
+echo -e "\e[33m\e[1m
+██████╗ ██████╗ ███████╗██████╗  █████╗ ██████╗ ██╗███╗   ██╗ ██████╗ 
+██╔══██╗██╔══██╗██╔════╝██╔══██╗██╔══██╗██╔══██╗██║████╗  ██║██╔════╝ 
+██████╔╝██████╔╝█████╗  ██████╔╝███████║██████╔╝██║██╔██╗ ██║██║  ███╗
+██╔═══╝ ██╔══██╗██╔══╝  ██╔═══╝ ██╔══██║██╔══██╗██║██║╚██╗██║██║   ██║
+██║     ██║  ██║███████╗██║     ██║  ██║██║  ██║██║██║ ╚████║╚██████╔╝
+╚═╝     ╚═╝  ╚═╝╚══════╝╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝ ╚═════╝                                                                                                                                 
+\e[0m"
 
 #######################################
 #             DOWNLOAD                #
@@ -76,6 +92,8 @@ else
     echo "Extracting [HUMAN GORGO PANTR PANPA PONAB NOMLE]"
     python scripts/filter_oma_groups.py  HUMAN GORGO PANTR PANPA PONAB NOMLE
 fi
+
+<<'COMMENT'
 
 # Exp_2 : HUMAN GORGO AOTNA MOUSE JACJA MACMU ASTMX XIPMA URSAM PHACI
 FILE=./oma_seqs/exp_2
@@ -145,6 +163,16 @@ else
 fi
 
 
+
+
+echo -e "\e[33m\e[1m
+██╗  ██╗ ██████╗██╗     ██╗   ██╗███████╗████████╗███████╗██████╗ 
+██║ ██╔╝██╔════╝██║     ██║   ██║██╔════╝╚══██╔══╝██╔════╝██╔══██╗
+█████╔╝ ██║     ██║     ██║   ██║███████╗   ██║   █████╗  ██████╔╝
+██╔═██╗ ██║     ██║     ██║   ██║╚════██║   ██║   ██╔══╝  ██╔══██╗
+██║  ██╗╚██████╗███████╗╚██████╔╝███████║   ██║   ███████╗██║  ██║
+╚═╝  ╚═╝ ╚═════╝╚══════╝ ╚═════╝ ╚══════╝   ╚═╝   ╚══════╝╚═╝  ╚═╝                                                                                                                                                                          
+\e[0m"
 
 #######################################
 #              Indexing               #
@@ -278,7 +306,7 @@ echo -e "\e[33m\e[1mAssessing clustering of ${dir}/idx_exp${exp_no}_pivoted.tsv 
 
 for dir in oma_seqs/*     # list directories in the form "/tmp/dirname/"
 do
-    mkdir -p ${dir}/clusters/assessement/{summaries,detailed}
+    mkdir -p ${dir}/clusters/assessement/{summaries,details}
     exp_id=${dir%*/}
     exp_id=${exp_id##*/}
     exp_no=$(echo "${exp_id//[!0-9]/}")
@@ -289,7 +317,7 @@ do
         echo "Assessing ${kClusters_file} .."
         python scripts/kCluster_assess_by_OMA.py ${kClusters_file}
         mv ${dir}/clusters/assessement*_summary.txt ${dir}/clusters/assessement/summaries
-        mv ${dir}/clusters/assessement*tsv ${dir}/clusters/assessement/detailed
+        mv ${dir}/clusters/assessement*tsv ${dir}/clusters/assessement/details
     done
 
 done
@@ -304,3 +332,61 @@ do
     echo -e "\e[33m\e[1mVisualizing clustering assessement of ${dir} .. \e[0m"
     python scripts/visualize_clustering_assessment.py ${dir}/clusters/assessement/summaries
 done
+
+COMMENT
+
+echo -e "\e[33m\e[1m
+ ██████╗██████╗       ██╗  ██╗██╗████████╗
+██╔════╝██╔══██╗      ██║  ██║██║╚══██╔══╝
+██║     ██║  ██║█████╗███████║██║   ██║   
+██║     ██║  ██║╚════╝██╔══██║██║   ██║   
+╚██████╗██████╔╝      ██║  ██║██║   ██║   
+ ╚═════╝╚═════╝       ╚═╝  ╚═╝╚═╝   ╚═╝                                                                                                                                                                          
+\e[0m"
+
+declare -A WORDSIZE
+
+WORDSIZE[75]=4
+WORDSIZE[80]=5
+WORDSIZE[85]=6
+WORDSIZE[90]=8
+WORDSIZE[95]=10
+                    
+#######################################
+#            Clustering               #
+#######################################
+
+
+for dir in oma_seqs/*     # list directories in the form "/tmp/dirname/"
+do
+    exp_id=${dir%*/}
+    exp_id=${exp_id##*/}
+    exp_no=$(echo "${exp_id//[!0-9]/}")
+    idx_prefix=${dir}/idx_exp${exp_no}
+
+    mkdir -p ${dir}/cdhit/{80,85,90,95}/{summaries,details}
+    for THRESHOLD in 75 80 85 90 95; 
+    do
+        
+        FILE=${dir}/cdhit/${THRESHOLD}/exp${exp_no}_${THRESHOLD}.cdhit
+        if [ -f "$FILE" ]; then
+            echo -e "${OK} ${FILE} found, skipping the clustering.."
+        else
+            echo "Clustering exp${exp_no}.fa with threshold ${THRESHOLD}%"
+            cd-hit-est -c 0.${THRESHOLD} -T 0 -M 0 -n ${WORDSIZE[${THRESHOLD}]} -d 0 -i ${dir}/exp${exp_no}.fa -o ${FILE}
+        fi
+        
+    done
+
+done
+
+                    
+#######################################
+#            Assessement              #
+#######################################
+
+
+
+#######################################
+#            Visualization            #
+#######################################
