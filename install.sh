@@ -21,6 +21,7 @@ else
     rm -rf kCluster2
     git clone https://github.com/mr-eyes/kCluster2.git
     cd kCluster2
+    git checkout devel
     git submodule update --init --recursive
     mkdir build && cd build
     cmake ..
