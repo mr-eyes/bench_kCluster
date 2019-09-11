@@ -14,7 +14,7 @@ else
 fi
 
 
-FILE=./kCluster2
+FILE=./kCluster2/build
 if [ -d "$FILE" ]; then
     echo -e "${OK} kCluster2 (pairwise) exist, skipping.."
 else 
