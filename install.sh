@@ -17,7 +17,8 @@ fi
 FILE=./kCluster2/build
 if [ -d "$FILE" ]; then
     echo -e "${OK} kCluster2 (pairwise) exist, skipping.."
-else 
+else
+    rm -rf kCluster2
     git clone https://github.com/mr-eyes/kCluster2.git
     cd kCluster2
     git submodule update --init --recursive
