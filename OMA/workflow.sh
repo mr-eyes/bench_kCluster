@@ -365,7 +365,7 @@ do
 
     mkdir -p ${dir}/cdhit/{summaries,details}
 
-    for THRESHOLD in 95 90;# 75 80 85 90 95; 
+    for THRESHOLD in 75 80 85 90 95;
     do
         FILE=${dir}/cdhit/exp${exp_no}_${THRESHOLD}.cdhit
         if [ -f "$FILE" ]; then
