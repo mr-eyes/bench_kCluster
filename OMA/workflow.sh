@@ -93,7 +93,8 @@ else
     python scripts/filter_oma_groups.py  HUMAN GORGO PANTR PANPA PONAB NOMLE
 fi
 
-<<'COMMENT'
+# <<'COMMENT'
+# COMMENT
 
 # Exp_2 : HUMAN GORGO AOTNA MOUSE JACJA MACMU ASTMX XIPMA URSAM PHACI
 FILE=./oma_seqs/exp_2
@@ -333,8 +334,6 @@ do
     python scripts/visualize_clustering_assessment.py ${dir}/clusters/assessement/summaries
 done
 
-COMMENT
-
 echo -e "\e[33m\e[1m
  ██████╗██████╗       ██╗  ██╗██╗████████╗
 ██╔════╝██╔══██╗      ██║  ██║██║╚══██╔══╝
@@ -411,3 +410,15 @@ for dir in oma_seqs/*
 do
     python scripts/visualize_clustering_assessment.py ${dir}/cdhit/summaries
 done
+
+
+echo -e "\e[92m\e[1m
+████████▄   ▄██████▄  ███▄▄▄▄      ▄████████ 
+███   ▀███ ███    ███ ███▀▀▀██▄   ███    ███ 
+███    ███ ███    ███ ███   ███   ███    █▀  
+███    ███ ███    ███ ███   ███  ▄███▄▄▄     
+███    ███ ███    ███ ███   ███ ▀▀███▀▀▀     
+███    ███ ███    ███ ███   ███   ███    █▄  
+███   ▄███ ███    ███ ███   ███   ███    ███ 
+████████▀   ▀██████▀   ▀█   █▀    ██████████ 
+\e[0m"
