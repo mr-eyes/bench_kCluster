@@ -240,9 +240,10 @@ for cluster_id, transcripts_ids in sorted(clusters_transcripts_ids.items()):
 res.close()
 
 
-# Writing summary file of counts ________________________________
-
-output_file = os.path.join(output_dir, "summaries", "assessement_" + output_prefix + "_summary.txt")
+# Writing summary file of counts _______________________________
+tmp_prefix = output_prefix.split("_")
+tmp_prefix = tmp_prefix[0] + "_0." + tmp_prefix[1] + "%"
+output_file = os.path.join(output_dir, "summaries", "assessement_" + tmp_prefix + "_summary.txt")
 summary = open(output_file, 'w')
 summary.write("seqs\tclstrs\ttype\n")
 summary.write(("%d\t%d\tcm\n") % (_cm_transcripts_count, _complete_mixed))
