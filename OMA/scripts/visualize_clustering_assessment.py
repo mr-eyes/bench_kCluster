@@ -26,7 +26,8 @@ for summary_file in sorted(glob(summary_dir + "/*sum*txt")):
     f = open(summary_file, 'r')
     next(f)  # skip headers
     _threshold = re.findall(r"_(\d+\.\d+)%", summary_file)[0].replace(".","")
-
+    _threshold = str(int(_threshold))
+        
     thresholds.append(_threshold)
 
     for line in f:
