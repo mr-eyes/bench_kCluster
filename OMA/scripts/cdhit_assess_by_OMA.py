@@ -1,5 +1,4 @@
 from __future__ import division
-import tqdm
 import re
 import sys
 import json
