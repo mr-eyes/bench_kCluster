@@ -411,7 +411,7 @@ do
     python scripts/visualize_clustering_assessment.py ${dir}/cdhit/summaries
 done
 
-
+#Delta Corpse priest 1
 echo -e "\e[92m\e[1m
 ████████▄   ▄██████▄  ███▄▄▄▄      ▄████████ 
 ███   ▀███ ███    ███ ███▀▀▀██▄   ███    ███ 
