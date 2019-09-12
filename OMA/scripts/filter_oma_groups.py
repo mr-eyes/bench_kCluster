@@ -67,7 +67,7 @@ for oma_group, species in all_group_to_species.items():
             temp_proteins.append(entry)
     
     else:
-        if len(temp_proteins) == SPECIES_NO:
+        if len(temp_proteins): # == SPECIES_NO:
             for prot in temp_proteins:
                 protein_to_oma_group[prot] = oma_group
 
