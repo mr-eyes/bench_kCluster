@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+RUNLOG=$(pwd)/profiling.log
+echo "Run by `whoami` on `date`" > $RUNLOG
+
+
 kCluster_pairwise=$(pwd)/../kCluster2/build/kCluster_pairwise
 
 if ! [ -x "$(command -v kCluster)" ]; then
@@ -191,7 +195,7 @@ do
         echo -e "${OK} ${exp_id} already indexed, skipping.."
     else
         echo -e "${PROCESSING} Indexing ${exp_id##*/} .."
-        kCluster index_kmers -f ${dir}/*.fa -n  ${dir}/*.fa.names -k 31
+        /usr/bin/time -v kCluster index_kmers -f ${dir}/*.fa -n  ${dir}/*.fa.names -k 31 2>>${RUNLOG}
         mv idx* ${dir}
     fi
 
@@ -222,7 +226,7 @@ do
         echo -e "${OK} ${exp_id} pairwise matrix already exist, skipping.."
     else
         echo -e "${PROCESSING} Generating ${exp_id##*/} pairwise TSV .."
-        ${kCluster_pairwise} --idx=${idx_prefix} --qs=${QsList}
+        /usr/bin/time -v ${kCluster_pairwise} --idx=${idx_prefix} --qs=${QsList} 2>>${RUNLOG}
     fi
 
 done
@@ -246,7 +250,7 @@ do
         echo -e "${OK} ${exp_id} pivoted pairwise matrix already exist, skipping.."
     else
         echo -e "${PROCESSING} Pivoting ${exp_id##*/} pairwise TSV .."
-        ${kCluster_pairwise} pivote --idx=${dir}/idx_exp${exp_no} --qs=${QsList}
+        /usr/bin/time -v ${kCluster_pairwise} pivote --idx=${dir}/idx_exp${exp_no} --qs=${QsList} 2>>${RUNLOG}
     fi
 
 done
@@ -372,7 +376,7 @@ do
             echo -e "${OK} ${FILE} found, skipping the clustering.."
         else
             echo "Clustering exp${exp_no}.fa with threshold ${THRESHOLD}%"
-            cd-hit-est -c 0.${THRESHOLD} -T 0 -M 0 -n ${WORDSIZE[${THRESHOLD}]} -d 0 -i ${dir}/exp${exp_no}.fa -o ${FILE}
+            /usr/bin/time -v cd-hit-est -c 0.${THRESHOLD} -T 0 -M 0 -n ${WORDSIZE[${THRESHOLD}]} -d 0 -i ${dir}/exp${exp_no}.fa -o ${FILE} 2>>${RUNLOG}
         fi
         
     done
