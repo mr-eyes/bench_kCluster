@@ -1,4 +1,4 @@
-# Benchmarking scripts for kCluster
+# Benchmarking scripts for kSpider
 
 ## Installation
 
